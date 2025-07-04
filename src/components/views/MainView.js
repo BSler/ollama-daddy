@@ -145,19 +145,17 @@ export class MainView extends LitElement {
 
     static properties = {
         onStart: { type: Function },
-        onAPIKeyHelp: { type: Function },
         isInitializing: { type: Boolean },
         onLayoutModeChange: { type: Function },
-        showApiKeyError: { type: Boolean },
+        showModelError: { type: Boolean },
     };
 
     constructor() {
         super();
         this.onStart = () => {};
-        this.onAPIKeyHelp = () => {};
         this.isInitializing = false;
         this.onLayoutModeChange = () => {};
-        this.showApiKeyError = false;
+        this.showModelError = false;
         this.boundKeydownHandler = this.handleKeydown.bind(this);
     }
 
@@ -194,11 +192,15 @@ export class MainView extends LitElement {
     }
 
     handleInput(e) {
-        localStorage.setItem('apiKey', e.target.value);
+        localStorage.setItem('modelName', e.target.value);
         // Clear error state when user starts typing
-        if (this.showApiKeyError) {
-            this.showApiKeyError = false;
+        if (this.showModelError) {
+            this.showModelError = false;
         }
+    }
+
+    handleHostInput(e) {
+        localStorage.setItem('ollamaHost', e.target.value);
     }
 
     handleStartClick() {
@@ -208,9 +210,6 @@ export class MainView extends LitElement {
         this.onStart();
     }
 
-    handleAPIKeyHelpClick() {
-        this.onAPIKeyHelp();
-    }
 
     handleResetOnboarding() {
         localStorage.removeItem('onboardingCompleted');
@@ -227,11 +226,11 @@ export class MainView extends LitElement {
     }
 
     // Method to trigger the red blink animation
-    triggerApiKeyError() {
-        this.showApiKeyError = true;
+    triggerModelError() {
+        this.showModelError = true;
         // Remove the error class after 1 second
         setTimeout(() => {
-            this.showApiKeyError = false;
+            this.showModelError = false;
         }, 1000);
     }
 
@@ -287,20 +286,23 @@ export class MainView extends LitElement {
 
             <div class="input-group">
                 <input
-                    type="password"
-                    placeholder="Enter your Gemini API Key"
-                    .value=${localStorage.getItem('apiKey') || ''}
+                    type="text"
+                    placeholder="Ollama host"
+                    .value=${localStorage.getItem('ollamaHost') || 'http://127.0.0.1:11434'}
+                    @input=${this.handleHostInput}
+                />
+                <input
+                    type="text"
+                    placeholder="Enter Ollama model name"
+                    .value=${localStorage.getItem('modelName') || 'llama3'}
                     @input=${this.handleInput}
-                    class="${this.showApiKeyError ? 'api-key-error' : ''}"
+                    class="${this.showModelError ? 'api-key-error' : ''}"
                 />
                 <button @click=${this.handleStartClick} class="start-button ${this.isInitializing ? 'initializing' : ''}">
                     ${this.getStartButtonText()}
                 </button>
             </div>
-            <p class="description">
-                dont have an api key?
-                <span @click=${this.handleAPIKeyHelpClick} class="link">get one here</span>
-            </p>
+            <p class="description">Model will be loaded from the specified Ollama server</p>
         `;
     }
 }

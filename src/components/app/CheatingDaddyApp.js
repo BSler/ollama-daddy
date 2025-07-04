@@ -261,19 +261,8 @@ export class CheatingDaddyApp extends LitElement {
 
     // Main view event handlers
     async handleStart() {
-        // check if api key is empty do nothing
-        const apiKey = localStorage.getItem('apiKey')?.trim();
-        if (!apiKey || apiKey === '') {
-            // Trigger the red blink animation on the API key input
-            const mainView = this.shadowRoot.querySelector('main-view');
-            if (mainView && mainView.triggerApiKeyError) {
-                mainView.triggerApiKeyError();
-            }
-            return;
-        }
-
         if (window.cheddar) {
-            await window.cheddar.initializeGemini(this.selectedProfile, this.selectedLanguage);
+            await window.cheddar.initializeOllama(this.selectedProfile);
             // Pass the screenshot interval as string (including 'manual' option)
             window.cheddar.startCapture(this.selectedScreenshotInterval, this.selectedImageQuality);
         }
@@ -283,12 +272,6 @@ export class CheatingDaddyApp extends LitElement {
         this.currentView = 'assistant';
     }
 
-    async handleAPIKeyHelp() {
-        if (window.require) {
-            const { ipcRenderer } = window.require('electron');
-            await ipcRenderer.invoke('open-external', 'https://cheatingdaddy.com/help/api-key');
-        }
-    }
 
     // Customize view event handlers
     handleProfileChange(profile) {
@@ -402,7 +385,6 @@ export class CheatingDaddyApp extends LitElement {
                 return html`
                     <main-view
                         .onStart=${() => this.handleStart()}
-                        .onAPIKeyHelp=${() => this.handleAPIKeyHelp()}
                         .onLayoutModeChange=${layoutMode => this.handleLayoutModeChange(layoutMode)}
                     ></main-view>
                 `;

@@ -462,7 +462,7 @@ export class OnboardingView extends LitElement {
             {
                 icon: 'assets/onboarding/ready.svg',
                 title: 'Ready to Go',
-                content: 'Add your Gemini API key in settings and start getting AI-powered assistance in real-time.',
+                content: 'Start a session to chat with your configured Ollama server.',
             },
         ];
 
