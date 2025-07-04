@@ -4,31 +4,26 @@ if (require('electron-squirrel-startup')) {
 
 const { app, BrowserWindow, shell, ipcMain } = require('electron');
 const { createWindow, updateGlobalShortcuts } = require('./utils/window');
-const { setupGeminiIpcHandlers, stopMacOSAudioCapture, sendToRenderer } = require('./utils/gemini');
+const { setupOllamaIpcHandlers, sendToRenderer } = require('./utils/ollama');
 
-const geminiSessionRef = { current: null };
+const ollamaSessionRef = { current: null };
 let mainWindow = null;
 
 function createMainWindow() {
-    mainWindow = createWindow(sendToRenderer, geminiSessionRef);
+    mainWindow = createWindow(sendToRenderer, ollamaSessionRef);
     return mainWindow;
 }
 
 app.whenReady().then(() => {
     createMainWindow();
-    setupGeminiIpcHandlers(geminiSessionRef);
+    setupOllamaIpcHandlers(ollamaSessionRef);
     setupGeneralIpcHandlers();
 });
 
 app.on('window-all-closed', () => {
-    stopMacOSAudioCapture();
     if (process.platform !== 'darwin') {
         app.quit();
     }
-});
-
-app.on('before-quit', () => {
-    stopMacOSAudioCapture();
 });
 
 app.on('activate', () => {
@@ -40,7 +35,6 @@ app.on('activate', () => {
 function setupGeneralIpcHandlers() {
     ipcMain.handle('quit-application', async event => {
         try {
-            stopMacOSAudioCapture();
             app.quit();
             return { success: true };
         } catch (error) {
@@ -61,7 +55,7 @@ function setupGeneralIpcHandlers() {
 
     ipcMain.on('update-keybinds', (event, newKeybinds) => {
         if (mainWindow) {
-            updateGlobalShortcuts(newKeybinds, mainWindow, sendToRenderer, geminiSessionRef);
+            updateGlobalShortcuts(newKeybinds, mainWindow, sendToRenderer, ollamaSessionRef);
         }
     });
 

@@ -10,7 +10,7 @@ A real-time AI assistant that provides contextual help during video calls, inter
 
 ## Features
 
-- **Live AI Assistance**: Real-time help powered by Google Gemini 2.0 Flash Live
+ - **Live AI Assistance**: Real-time help powered by an Ollama model (local or remote)
 - **Screen & Audio Capture**: Analyzes what you see and hear for contextual responses
 - **Multiple Profiles**: Interview, Sales Call, Business Meeting, Presentation, Negotiation
 - **Transparent Overlay**: Always-on-top window that can be positioned anywhere
@@ -19,17 +19,19 @@ A real-time AI assistant that provides contextual help during video calls, inter
 
 ## Setup
 
-1. **Get a Gemini API Key**: Visit [Google AI Studio](https://aistudio.google.com/apikey)
-2. **Install Dependencies**: `npm install`
-3. **Run the App**: `npm start`
+1. **Install Dependencies**: `npm install`
+2. **Run the App**: `npm start`
+
+To use a remote Ollama server, specify the host address in the main window or set the `OLLAMA_HOST` environment variable before launching.
 
 ## Usage
 
-1. Enter your Gemini API key in the main window
-2. Choose your profile and language in settings
-3. Click "Start Session" to begin
-4. Position the window using keyboard shortcuts
-5. The AI will provide real-time assistance based on your screen and what interview asks
+1. Enter the Ollama model name in the main window
+2. Optional: specify a custom Ollama host (defaults to `http://127.0.0.1:11434`)
+3. Choose your profile and language in settings
+4. Click "Start Session" to begin
+5. Position the window using keyboard shortcuts
+6. The AI will provide real-time assistance based on your screen and what interview asks
 
 ## Keyboard Shortcuts
 
@@ -47,6 +49,5 @@ A real-time AI assistant that provides contextual help during video calls, inter
 ## Requirements
 
 - Electron-compatible OS (macOS, Windows, Linux)
-- Gemini API key
 - Screen recording permissions
 - Microphone/audio permissions

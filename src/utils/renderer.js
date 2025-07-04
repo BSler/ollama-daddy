@@ -138,15 +138,14 @@ function arrayBufferToBase64(buffer) {
     return btoa(binary);
 }
 
-async function initializeGemini(profile = 'interview', language = 'en-US') {
-    const apiKey = localStorage.getItem('apiKey')?.trim();
-    if (apiKey) {
-        const success = await ipcRenderer.invoke('initialize-gemini', apiKey, localStorage.getItem('customPrompt') || '', profile, language);
-        if (success) {
-            cheddar.e().setStatus('Live');
-        } else {
-            cheddar.e().setStatus('error');
-        }
+async function initializeOllama(profile = 'interview') {
+    const model = localStorage.getItem('modelName')?.trim() || 'llama3';
+    const host = localStorage.getItem('ollamaHost')?.trim() || 'http://127.0.0.1:11434';
+    const success = await ipcRenderer.invoke('initialize-ollama', host, model, localStorage.getItem('customPrompt') || '', profile);
+    if (success) {
+        cheddar.e().setStatus('Live');
+    } else {
+        cheddar.e().setStatus('error');
     }
 }
 
@@ -647,7 +646,7 @@ function handleShortcut(shortcutKey) {
 }
 
 window.cheddar = {
-    initializeGemini,
+    initializeOllama,
     startCapture,
     stopCapture,
     sendTextMessage,
